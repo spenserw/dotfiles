@@ -49,9 +49,6 @@ syntax enable
 au BufRead,BufNewFile *.jinja2 setfiletype html
 au BufRead,BufNewFile *.tpl setfiletype html
 
-" Fix weird file browser behavior (must be as same dir as file??)
-autocmd BufEnter * cd %:p:h
-
 " Add for always match tags
 let g:mta_filetypes = { 'html' : 1, 'xhtml' : 1, 'xml' : 1, 'jinja' : 1, 'smarty': 1 }
 
@@ -73,10 +70,11 @@ nnoremap <C-e> :ALENextWrap<CR>
 
 filetype plugin indent on
 
+" Disable on Thinkpad
 "set background=dark
-let g:solarized_visibility = "high"
-let g:solarized_contrast = "high"
-colorscheme solarized
+"let g:solarized_visibility = "high"
+"let g:solarized_contrast = "high"
+"colorscheme solarized
 
 " Added for ALE
 let g:ale_linters = {
