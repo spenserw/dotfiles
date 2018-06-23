@@ -28,6 +28,8 @@ Plugin 'heavenshell/vim-jsdoc'
 Plugin 'w0rp/ale'
 Plugin 'pangloss/vim-javascript'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'junegunn/goyo.vim'
+Plugin 'junegunn/limelight.vim'
 
 " Add for vim-airline
 " set laststatus=2
@@ -66,6 +68,9 @@ nnoremap <C-l> <C-w><C-l>
 " Unbind this guy because he seems to crash XTerm...
 nnoremap <C-s> <esc>
 
+" Writing mode
+nnoremap <C-z> :setlocal spell spelllang=en_us<CR>:Goyo 100<CR>:Limelight<CR>:setlocal wrap<CR>:set formatoptions=l<CR>:set lbr<CR>
+
 nnoremap <C-e> :ALENextWrap<CR>
 
 filetype plugin indent on
@@ -76,11 +81,16 @@ filetype plugin indent on
 "let g:solarized_contrast = "high"
 "colorscheme solarized
 
+" Add for Limelight
+let g:limelight_conceal_ctermfg = 'gray'
+
 " Added for ALE
 let g:ale_linters = {
 \   'javascript': ['eslint'],
+\   'cpp': ['g++'],
 \}
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'never'
+highlight ALEError ctermbg=Red
