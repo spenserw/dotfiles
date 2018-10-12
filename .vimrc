@@ -24,12 +24,12 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'Valloric/MatchTagAlways'
 Plugin 'tpope/vim-commentary'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'heavenshell/vim-jsdoc'
 Plugin 'w0rp/ale'
 Plugin 'pangloss/vim-javascript'
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
+Plugin 'tikhomirov/vim-glsl'
 
 " Add for vim-airline
 " set laststatus=2
@@ -54,9 +54,6 @@ au BufRead,BufNewFile *.tpl setfiletype html
 " Add for always match tags
 let g:mta_filetypes = { 'html' : 1, 'xhtml' : 1, 'xml' : 1, 'jinja' : 1, 'smarty': 1 }
 
-" Add for vim-jsdoc
-let g:jsdoc_allow_input_prompt = 1
-
 nnoremap <C-f> <esc>
 inoremap <C-f> <esc>
 
@@ -79,7 +76,7 @@ filetype plugin indent on
 "set background=dark
 "let g:solarized_visibility = "high"
 "let g:solarized_contrast = "high"
-"colorscheme solarized
+colorscheme desert
 
 " Add for Limelight
 let g:limelight_conceal_ctermfg = 'gray'
@@ -89,6 +86,7 @@ let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'cpp': ['g++'],
 \}
+let g:ale_cpp_gcc_options='-std=c++17 -Wall'
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_save = 1
