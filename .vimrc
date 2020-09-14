@@ -11,12 +11,12 @@ set incsearch
 set hls
 set nowrap " can't believe I just found you <3
 
+set encoding=utf-8
+
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" " alternatively, pass a path where Vundle should install plugins
-" "call vundle#begin('~/some/path/here')
-"
+
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
@@ -24,15 +24,12 @@ Plugin 'vim-airline/vim-airline-themes'
 Plugin 'Valloric/MatchTagAlways'
 Plugin 'tpope/vim-commentary'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'w0rp/ale'
-Plugin 'pangloss/vim-javascript'
-Plugin 'altercation/vim-colors-solarized'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
-Plugin 'tikhomirov/vim-glsl'
+Plugin 'ctrlpvim/ctrlp.vim'
 
 " Add for vim-airline
-" set laststatus=2
+ set laststatus=2
 
 call vundle#end()
 
@@ -45,6 +42,7 @@ set expandtab
 set autoindent
 
 autocmd Filetype go setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype cpp setlocal ts=4 sw=4 sts=4 expandtab
 
 syntax enable
 " Add for jinja2 files (LiveStories)
@@ -86,9 +84,15 @@ let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'cpp': ['g++'],
 \}
-let g:ale_cpp_gcc_options='-std=c++17 -Wall'
+let g:ale_cpp_gcc_options='-std=c++17 -Wall -Ithirdparty/'
 let g:airline#extensions#ale#enabled = 1
 let g:ale_lint_on_enter = 1
 let g:ale_lint_on_save = 1
 let g:ale_lint_on_text_changed = 'never'
 highlight ALEError ctermbg=Red
+
+" Added for vim-markdown
+let g:vim_markdown_folding_level = 6
+let g:vim_markdown_folding_style_pythonic = 1
+
+set wildignore+=*.o
