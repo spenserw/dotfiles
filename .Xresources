@@ -1,0 +1,15 @@
+*foreground: rgb:ff/ff/ff
+*background: black
+*scrollBar: True
+xterm*wideChars: true
+xterm*locale: true
+xterm*vt100Graphics: true
+XTerm.vt100.locale: true
+xterm*utf8:   1
+xterm*font: misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+xterm*VT100*wideFont:  -misc-fixed-medium-r-normal-ja-13-125-75-75-c-120-iso10646-1
+xterm*VT100*boldFont:  -misc-fixed-bold-r-semicondensed--13-120-75-75-c-60-iso10646-1
+ttyModes: erase ^?
+*backarrowKeyIsErase: true
+xterm*selectToClipboard: true
+xterm*disallowedWindowOps: 20,21,SetXProp
