@@ -2,6 +2,9 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 (add-to-list 'load-path "~/.emacs.d/elisp")
+
+(server-start)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -9,8 +12,7 @@
  ;; If there is more than one, they won't work right.
  '(org-startup-truncated nil)
  '(package-selected-packages
-   (quote
-	(rg smart-tabs-mode ## yasnippet tabbar olivetti glsl-mode evil-commentary oceanic-theme evil))))
+   '(org-roam rg smart-tabs-mode ## yasnippet tabbar olivetti glsl-mode evil-commentary oceanic-theme evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -34,6 +36,9 @@
 
 ;; Yasnippets
 (yas-global-mode 1)
+;; Enable old org-structure-template-alist behaviour
+(setq byte-compile-warnings '(cl-functions)) ;; silence warning about 'deprecated cl' in org-tempo
+(require 'org-tempo)
 
 ;; appearance & behavior
 (tool-bar-mode -1)
@@ -90,6 +95,11 @@
   (set-foreground-color "#1c1e1f")
   'variable-pitch-mode)
 
+;; org-roam
+(setq org-roam-directory "~/documents/notes/org/org-roam")
+(add-hook 'after-init-hook 'org-roam-mode)
+(require 'org-roam-protocol)
+
 (defun org-notes-insert-link (file)
   "Insert link to note"
   (interactive "FFile:") ; `F` Interactive code signifies a file that may or may not exist.
@@ -112,10 +122,7 @@
 
 ;; Notes - Biology
 (add-to-list 'org-structure-template-alist
-             (list "B" (concat "#+TITLE:?\n"
-							   "* Encounters\n"
-							   "* Images\n"
-                               "* Resources\n")))
+             '("B" . "#+TITLE:?\n* Encounters\n* Images\n* Resources\n"))
 
 ;; Convenience binds
 (global-set-key (kbd "M-p") 'query-replace)
