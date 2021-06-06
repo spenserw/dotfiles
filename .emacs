@@ -12,13 +12,14 @@
  ;; If there is more than one, they won't work right.
  '(org-startup-truncated nil)
  '(package-selected-packages
-   '(org-roam rg smart-tabs-mode ## yasnippet tabbar olivetti glsl-mode evil-commentary oceanic-theme evil)))
+   '(vue-mode org-roam rg smart-tabs-mode ## yasnippet tabbar olivetti glsl-mode evil-commentary oceanic-theme evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "#1B2B34" :foreground "#D8DEE9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 92 :width normal :foundry "ADBO" :family "Source Code Pro"))))
+ '(mmm-default-submode-face ((t nil)))
  '(org-document-title ((t (:weight bold :height 2.0))))
  '(org-level-1 ((t (:height 1.9 :family "ETBembo"))))
  '(org-level-2 ((t (:height 1.7 :family "ETBembo"))))
@@ -33,6 +34,7 @@
 
 (smart-tabs-insinuate 'c 'c++)
 (setq-default tab-width 4)
+(setq js-indent-level 2)
 
 ;; Yasnippets
 (yas-global-mode 1)
@@ -127,6 +129,8 @@
 ;; Convenience binds
 (global-set-key (kbd "M-p") 'query-replace)
 (global-set-key (kbd "C-q") 'kill-buffer-and-window)
+(global-set-key (kbd "C-c f") 'org-roam-find-file)
+(global-set-key (kbd "C-c r") 'org-roam-insert)
 
 ;; GLSL
 (autoload 'glsl-mode "glsl-mode" nil t)
