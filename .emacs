@@ -11,16 +11,18 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("cfd51857f5e80eddece7eb5d30b9afce81f442707207e0d636250d03978a66ec" default))
+   '("5c9bd73de767fa0d0ea71ee2f3ca6fe77261d931c3d4f7cca0734e2a3282f439" "03f28a4e25d3ce7e8826b0a67441826c744cbf47077fb5bc9ddb18afe115005f" "d64a2afb4f2b196266dc25be670d44a45a94a9f8499279e3863d8a9d54711ed1" "07cb8ee4f51bde500e71e6da1311f2349d6f2e21570bcd9d0d85f5147d77c4a9" "c376e68aa20c8648d8b797cdf62e067761721e0b5d365f7957ad5a17504b1e61" "cfd51857f5e80eddece7eb5d30b9afce81f442707207e0d636250d03978a66ec" default))
+ '(helm-completion-style 'helm)
+ '(ispell-dictionary nil)
  '(org-startup-truncated nil)
  '(package-selected-packages
-   '(jsdoc undo-tree typescript-mode tree-sitter-langs tsi helm-lsp lsp-treemacs company flycheck lsp-ui lsp-mode helm-projectile helm cask writeroom-mode yaml-mode json-mode tree-sitter tsc quelpa-use-package quelpa magit exec-path-from-shell hl-todo smart-tabs-mode ## yasnippet tabbar olivetti glsl-mode evil-commentary oceanic-theme evil)))
+   '(lsp-treemacs flycheck twilight-bright-theme emacsql-sqlite forge magit yasnippet-snippets undo-tree typescript-mode tree-sitter-langs tsi helm-lsp company lsp-ui lsp-mode helm-projectile helm cask writeroom-mode yaml-mode json-mode tree-sitter tsc quelpa-use-package quelpa exec-path-from-shell hl-todo smart-tabs-mode ## tabbar olivetti glsl-mode evil-commentary oceanic-theme evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#1B2B34" :foreground "#D8DEE9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 92 :width normal :foundry "ADBO" :family "Source Code Pro"))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#1B2B34" :foreground "#D8DEE9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 82 :width normal :foundry "ADBO" :family "Source Code Pro"))))
  '(font-lock-comment-face ((t (:foreground "goldenrod" :weight normal))))
  '(mmm-default-submode-face ((t nil)))
  '(org-document-title ((t (:weight bold :height 2.0))))
@@ -53,20 +55,15 @@
 (exec-path-from-shell-copy-env "SSH_AGENT_PID")
 (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
 
-(require 'tramp)
-(setq tramp-default-method "scp")
-
 ;; Yasnippets
 (require 'yasnippet)
 (yas-global-mode 1)
-
-;; Ripgrep
-(require 'rg)
 
 ;; appearance & behavior
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (load-theme 'oceanic t)
+;; (load-theme 'twilight-bright t)
 (setq redisplay-dont-pause t)
 
 (setq hl-todo-keyword-faces
@@ -91,8 +88,29 @@
 ;; Auto revert mode
 (global-auto-revert-mode 1)
 
-(setq backup-directory-alist `(("." . "~/.saves")))
-(show-paren-mode 1)
+;; Preserve scratch
+(setq remember-notes-buffer-name "*scratch*"
+      initial-buffer-choice (lambda ()
+                              (kill-buffer remember-notes-buffer-name)
+                              (remember-notes)))
+
+;; Put backup files neatly away
+(let ((backup-dir "~/.saves")
+      (auto-saves-dir "~/.saves"))
+  (dolist (dir (list backup-dir auto-saves-dir))
+    (when (not (file-directory-p dir))
+      (make-directory dir t)))
+  (setq backup-directory-alist `(("." . ,backup-dir))
+        auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
+        auto-save-list-file-prefix (concat auto-saves-dir ".saves-")
+        tramp-backup-directory-alist `((".*" . ,backup-dir))
+        tramp-auto-save-directory auto-saves-dir))
+
+(setq backup-by-copying t    ; Don't delink hardlinks
+      delete-old-versions t  ; Clean up the backups
+      version-control t      ; Use version numbers on backups,
+      kept-new-versions 5    ; keep some new versions
+      kept-old-versions 2)   ; and some old ones, too
 
 ;; Open vertically by default
 (setq
@@ -139,6 +157,7 @@
 (global-set-key (kbd "M-p") 'query-replace)
 (global-set-key (kbd "C-c r") 'lsp-rename)
 (global-set-key (kbd "C-q") 'kill-buffer-and-window)
+(global-set-key (kbd "C-c d") 'lsp-goto-type-definition)
 
 ;; STOP CLOSING MY SESSION
 (global-unset-key (kbd "C-x C-c"))
@@ -146,6 +165,18 @@
 ;; GLSL
 (autoload 'glsl-mode "glsl-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.glsl\\'" . glsl-mode))
+
+;; YAML
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+
+;; NVM
+(require 'nvm)
+(nvm-use "16")
+
+;; RVM
+(require 'rvm)
+(rvm-use-default)
 
 ;; JSON
 (require 'json-mode)
@@ -186,12 +217,28 @@
   (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
   (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
 
+(use-package typescript-mode
+  :after tree-sitter
+  :config
+  ;; we choose this instead of tsx-mode so that eglot can automatically figure out language for server
+  ;; see https://github.com/joaotavora/eglot/issues/624 and https://github.com/joaotavora/eglot#handling-quirky-servers
+  (define-derived-mode typescriptreact-mode typescript-mode
+    "TypeScript TSX")
+
+  ;; use our derived mode for tsx files
+  (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescriptreact-mode))
+  ;; by default, typescript-mode is mapped to the treesitter typescript parser
+  ;; use our derived mode to map both .tsx AND .ts -> typescriptreact-mode -> treesitter tsx
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescriptreact-mode . tsx)))
+
+
 
 ;; (setq debug-on-error f)
 ;; LSP Mode
 ;; (setq lsp-log-io t)
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024 4))
+(setq lsp-diagnostics-provider :flycheck)
 (use-package lsp-mode
   :init
   :hook (web-mode . lsp)
@@ -200,17 +247,19 @@
   (use-package lsp-ui)
   (lsp-disabled-clients '(angular-ls))
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.node_modules\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.vendor\\'")
   (add-to-list 'lsp-solargraph-library-directories "/home/spenserw/.local/share/gem/ruby/3.0.0/gems")
+  (lsp-typescript-suggest-complete-function-calls nil)
+  (lsp-typescript-preferences-quote-style "single")
   (lsp-clients-typescript-max-ts-server-memory 2048)
-  (lsp-clients-typescript-server-args '("--stdio" "--tsserver-log-file" "/home/spenserw/.ts-server.log"))
-  (lsp-javascript-suggestion-actions-enabled 0))
-(use-package lsp-ui :commands lsp-ui-mode)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+  (flycheck-checker-error-threshold 1000))
 
+(add-hook 'html-mode-hook #'lsp)
 (add-hook 'js-mode-hook #'lsp)
 (add-hook 'typescript-mode-hook #'lsp)
 (add-hook 'ruby-mode-hook #'lsp)
 (add-hook 'python-mode-hook #'lsp)
+(add-hook 'css-mode-hook #'lsp)
 
 (setq-default show-trailing-whitespace t)
 
@@ -220,12 +269,11 @@
   (ansi-color-apply-on-region compilation-filter-start (point-max)))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 
-(use-package jsdoc
-  :ensure t
-  :quelpa (jsdoc
-           :fetcher github
-           :repo "isamert/jsdoc.el")
-  :config
-   (use-package tree-sitter)        ;; Required dependencies
-   (use-package tree-sitter-langs)
-  :hook (js-mode . tree-sitter-mode))
+;; CSS
+(setq-default css-indent-offset 2)
+
+;; Forge
+(with-eval-after-load 'magit
+  (require 'forge))
+
+(setq auth-sources '("~/.authinfo"))
