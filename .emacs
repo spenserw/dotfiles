@@ -125,15 +125,6 @@
 (global-set-key (kbd "C-j") 'evil-window-down)
 (global-set-key (kbd "C-k") 'evil-window-up)
 
-;; ====================
-;; Development Settings
-;; ====================
-
-;; Indentation
-(use-package smart-tabs-mode
-  :config
-  (smart-tabs-insinuate 'c 'c++))
-
 (setq-default c-basic-offset 4
               indent-tabs-mode nil
               js-indent-level 2
@@ -290,23 +281,6 @@
   (lsp-typescript-suggest-complete-function-calls nil)
   (lsp-typescript-preferences-quote-style "single")
   (lsp-clients-typescript-max-ts-server-memory 2048)
-  :config
-  ;; Custom root finder for TypeScript/JS in BigBiller3 project
-  (defun my-lsp-bigbiller-root ()
-    "Return bb_web as root for JS/TS files in BigBiller3 project."
-    (when-let* ((file (buffer-file-name))
-                (project-root (locate-dominating-file file ".git"))
-                (bb-web-dir (expand-file-name "bb_web" project-root)))
-      (when (and (file-directory-p bb-web-dir)
-                 (string-match-p "BigBiller3" project-root)
-                 (or (derived-mode-p 'typescript-mode)
-                     (derived-mode-p 'js-mode)))
-        bb-web-dir)))
-
-  ;; Add custom root finder to LSP (applies to both ts-ls and eslint)
-  (add-hook 'lsp-mode-hook
-            (lambda ()
-              (add-to-list 'lsp-root-uri-functions #'my-lsp-bigbiller-root)))
   ;; Ignore unnecessary JavaScript/TypeScript directories
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.node_modules\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]node_modules\\'")
@@ -436,12 +410,24 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("5c9bd73de767fa0d0ea71ee2f3ca6fe77261d931c3d4f7cca0734e2a3282f439" "03f28a4e25d3ce7e8826b0a67441826c744cbf47077fb5bc9ddb18afe115005f" "d64a2afb4f2b196266dc25be670d44a45a94a9f8499279e3863d8a9d54711ed1" "07cb8ee4f51bde500e71e6da1311f2349d6f2e21570bcd9d0d85f5147d77c4a9" "c376e68aa20c8648d8b797cdf62e067761721e0b5d365f7957ad5a17504b1e61" "cfd51857f5e80eddece7eb5d30b9afce81f442707207e0d636250d03978a66ec" default))
+   '("5c9bd73de767fa0d0ea71ee2f3ca6fe77261d931c3d4f7cca0734e2a3282f439"
+     "03f28a4e25d3ce7e8826b0a67441826c744cbf47077fb5bc9ddb18afe115005f"
+     "d64a2afb4f2b196266dc25be670d44a45a94a9f8499279e3863d8a9d54711ed1"
+     "07cb8ee4f51bde500e71e6da1311f2349d6f2e21570bcd9d0d85f5147d77c4a9"
+     "c376e68aa20c8648d8b797cdf62e067761721e0b5d365f7957ad5a17504b1e61"
+     "cfd51857f5e80eddece7eb5d30b9afce81f442707207e0d636250d03978a66ec"
+     default))
  '(helm-completion-style 'helm)
  '(ispell-dictionary nil)
  '(org-startup-truncated nil)
  '(package-selected-packages
-   '(lsp-treemacs flycheck twilight-bright-theme emacsql-sqlite forge magit yasnippet-snippets undo-tree typescript-mode tree-sitter-langs tsi company lsp-ui lsp-mode helm-projectile helm cask writeroom-mode yaml-mode json-mode tree-sitter tsc quelpa-use-package quelpa exec-path-from-shell hl-todo smart-tabs-mode tabbar olivetti glsl-mode evil-commentary oceanic-theme evil)))
+   '(company evil-commentary exec-path-from-shell flycheck forge
+             glsl-mode helm-lsp helm-projectile hl-todo json-mode
+             lsp-python-ms lsp-treemacs lsp-ui nvm oceanic-theme
+             olivetti quelpa-use-package rg rustic smart-tab
+             smart-tabs-mode tree-sitter-langs tsi
+             twilight-bright-theme typescript-mode undo-tree
+             writeroom-mode yaml-mode yasnippet)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
