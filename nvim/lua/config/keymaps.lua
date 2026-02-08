@@ -23,3 +23,6 @@ vim.keymap.set("n", "<Tab>", "==", { desc = "Auto-indent current line" })
 vim.keymap.set("i", "<S-Tab>", "<C-d>", { desc = "Unindent" })
 
 vim.keymap.set("i", "<C-f>", "<Esc>", { desc = "Escape" })
+
+vim.keymap.set("n", "<C-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move tab left" })
+vim.keymap.set("n", "<C-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move tab right" })

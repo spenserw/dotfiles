@@ -12,7 +12,7 @@ vim.api.nvim_set_hl(0, "DiagnosticError", { fg = "#ec5f67" })
 
 require("nvim-treesitter").setup({
   -- A list of parser names, or "all" (the five listed parsers should always be installed)
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "python", "javascript", "ruby" }, -- Add/remove languages here
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "python", "javascript", "ruby", "rust", "zig" }, -- Add/remove languages here
   -- Install parsers synchronously (only used for first install, defaults to false)
   sync_install = false,
   -- Automatically install parsers when opening a file of an unknown language
@@ -26,6 +26,6 @@ require("nvim-treesitter").setup({
 
 vim.o.guifont = "Source Code Pro:h8.5" -- text below applies for VimScript
 
-vim.lsp.enable("ruby_lsp")
+vim.lsp.enable({ "ruby_lsp", "rust-analyzer", "zls" })
 
 require("colorizer").setup()
