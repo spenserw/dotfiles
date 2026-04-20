@@ -26,3 +26,14 @@ vim.keymap.set("i", "<C-f>", "<Esc>", { desc = "Escape" })
 
 vim.keymap.set("n", "<C-S-h>", "<cmd>BufferLineMovePrev<cr>", { desc = "Move tab left" })
 vim.keymap.set("n", "<C-S-l>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move tab right" })
+
+vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = "Rename variable" })
+vim.keymap.set("n", "<leader>rr", function()
+  vim.ui.input({ prompt = "Search: " }, function(search)
+    if not search or search == "" then return end
+    vim.ui.input({ prompt = "Replace with: " }, function(replace)
+      if not replace then return end
+      vim.cmd("%s/" .. vim.fn.escape(search, "/\\") .. "/" .. vim.fn.escape(replace, "/\\") .. "/gc")
+    end)
+  end)
+end, { desc = "Find and replace" })
